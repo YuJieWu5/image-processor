@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+package image_server;
+
+// Define the service
+service ImageOperationService {
+  rpc GetImageOperation(ImageOperation) returns (ImageOperationResponse) {}
+}
+
+// The request message body
+message ImageOperation {
+  bytes image = 1;
+  repeated int32 rotate = 2; // Assuming a single rotation value is intended
+  optional int32 width = 3;
+  optional int32 height = 4;
+  optional bool grayscale = 5;
+  optional bool thumbnails = 6;
+  optional bool fliphorizontal = 7;
+  optional bool flipvertical = 8;
+}
+
+
+message ImageOperationResponse {
+  RequestSuccess success = 1;
+  RequestSuccessWithThumbnail success_with_thumbnail = 2;
+  RequestFail fail = 3;
+}
+
+// The response message for successful case
+message RequestSuccess {
+  int32 code = 1;
+  string message = 2;
+  bytes image = 3;
+}
+
+message RequestSuccessWithThumbnail {
+  int32 code = 1;
+  string message = 2;
+  bytes image = 3;
+  bytes thumbnail_image = 4;
+}
+
+message RequestFail {
+  int32 code = 1;
+  string message = 2;
+}
