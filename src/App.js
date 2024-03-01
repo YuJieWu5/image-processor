@@ -14,12 +14,16 @@ function App() {
   const [flipVertical, setFlipVertical] = useState(false);
   const [thumbnail, setThumbnail] = useState(false);
   const [grayscale, setGrayscale] = useState(false);
+  const [right, setRight] = useState(0);
+  const [left, setLeft] = useState(0);
   const [width, setWidth] = useState(null);
   const [height, setHeight] = useState(null);
+  const [imageErrorMsg, setImageErrorMsg] = useState(null);
   const [widthErrorMsg, setWidthErrorMsg] = useState(null);
   const [heightErrorMsg, setHeightErrorMsg] = useState(null);
   const [rotateErrorMsg, setRotateErrorMsg] = useState(null);
-  var rotate = [];
+  const [rotate, setRotate] = useState([]);
+  // var rotate = [];
   var rotateDegree = 0;
   const client = new ImageOperationServiceClient(
     "http://localhost:8080",
@@ -30,6 +34,7 @@ function App() {
   const handleImage = (event) => {
     const file = event.target.files[0];
     if (!file) {
+      setImageErrorMsg("Invalid Image Data");
       return;
     }
 
@@ -45,6 +50,7 @@ function App() {
       setImgSrc(e.target.result);
     };
     readerDataUrl.readAsDataURL(file);
+    setImageErrorMsg(null);
   };
 
   const handleFlip = (value) => {
@@ -56,7 +62,14 @@ function App() {
   };
 
   const handleRotate = (value) => {
-    rotate.push(value);
+    console.log(value);
+    if(value===90){
+      setRight(right+1);
+    }else{
+      setLeft(left+1);
+    }
+    // rotate.push(value);
+    setRotate([...rotate, value]);
   };
 
   const handleRotateDegree = (e) =>{
@@ -101,15 +114,23 @@ function App() {
   };
 
   const generateResult = async () => {
+    var final_rotate = rotate;
     if(rotateDegree!=0 && rotateDegree!=''){
       console.log(rotateDegree);
-      rotate.push(rotateDegree);
+      final_rotate.push(rotateDegree);
     }
+    for(var i=0; i<final_rotate.length; i++)
+      console.log(final_rotate[i]+" ");
+
+    if(imgBuffer==null){
+      setImageErrorMsg("Invalid Image Data");
+      return;
+    }      
       
     try {
       const request = new ImageOperation();
       request.setImage(new Uint8Array(imgBuffer));
-      request.setRotateList(rotate);
+      request.setRotateList(final_rotate);
       request.setWidth(width);
       request.setHeight(height);
       request.setGrayscale(grayscale);
@@ -141,11 +162,30 @@ function App() {
             document.getElementById("result").appendChild(img);
           }
         }
+        resetState();
       });
     } catch (error) {
       console.error("Error:", error);
     }
   };
+
+  const resetState = () =>{
+    // setImgSrc(null);
+    // setImgBuffer(null);
+    setFlipHorizontal(null);
+    setFlipVertical(null);
+    setThumbnail(false);
+    setGrayscale(false);
+    setWidth(null);
+    setHeight(null);
+    setImageErrorMsg(null);
+    setWidthErrorMsg(null);
+    setHeightErrorMsg(null);
+    setRotateErrorMsg(null);
+    setRight(0);
+    setLeft(0);
+    setRotate([]);
+  }
 
   return (
     <>
@@ -160,6 +200,7 @@ function App() {
           Select Image
         </div>
       </label>
+      {imageErrorMsg!=null &&<label className="error-txt">{imageErrorMsg}</label>}
       <div className="grid grid-cols-2 gap-2">
         <div>
           <h1>Original Image</h1>
@@ -172,7 +213,7 @@ function App() {
         </div>
         <div className="grid-flow-col auto-cols-max">
           <div>
-            <label>Flip Horizontal:</label>
+            <label className="font-bold">Flip Horizontal:</label>
             <label className="inline-flex items-center cursor-pointer ml-4">
               <input
                 onChange={() => handleFlip("horizontal")}
@@ -184,7 +225,7 @@ function App() {
             </label>
           </div>
           <div>
-            <label>Flip Vertical:</label>
+            <label className="font-bold">Flip Vertical:</label>
             <label className="inline-flex items-center cursor-pointer ml-4">
               <input
                 onChange={() => handleFlip("vertical")}
@@ -196,23 +237,23 @@ function App() {
             </label>
           </div>
           <div className="mt-5">
-            <label>Rotate:</label>
+            <label className="font-bold">Rotate:</label>
             <div className="ml-3 inline-flex">
               <button
                 onClick={() => handleRotate(-90)}
                 className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-l"
               >
-                RotateLeft <FontAwesomeIcon icon={faRotateLeft} />
+                RotateLeft <FontAwesomeIcon icon={faRotateLeft} />{left}
               </button>
               <button
                 onClick={() => handleRotate(90)}
                 className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-r"
               >
-                RotateRight <FontAwesomeIcon icon={faRotateRight} />
+                RotateRight <FontAwesomeIcon icon={faRotateRight} />{right}
               </button>
             </div>
             <div className="grid grid-flow-row auto-rows-max">
-              <label>Rotate with degree:</label>
+              <label className="font-bold">Rotate with degree:</label>
               <input
                 type="text"
                 onChange={handleRotateDegree}
@@ -222,7 +263,7 @@ function App() {
             </div>
           </div>
           <div className="mt-5">
-            <label>Resize:</label>
+            <label className="font-bold">Resize:</label>
             <div className="grid grid-flow-row auto-rows-max">
               <label>Width:</label>
               <input
@@ -241,7 +282,7 @@ function App() {
             </div>
           </div>
           <div className="mt-5">
-            <label>Grayscale:</label>
+            <label className="font-bold">Grayscale:</label>
             <label className="inline-flex items-center cursor-pointer ml-4">
               <input
                 onChange={handleGrayScaleChange}
@@ -253,7 +294,7 @@ function App() {
             </label>
           </div>
           <div className="mt-5">
-            <label>Thumbnail:</label>
+            <label className="font-bold">Thumbnail:</label>
             <label className="inline-flex items-center cursor-pointer ml-4">
               <input
                 onChange={handleThumbnailChange}
