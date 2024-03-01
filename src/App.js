@@ -23,7 +23,6 @@ function App() {
   const [heightErrorMsg, setHeightErrorMsg] = useState(null);
   const [rotateErrorMsg, setRotateErrorMsg] = useState(null);
   const [rotate, setRotate] = useState([]);
-  // var rotate = [];
   var rotateDegree = 0;
   const client = new ImageOperationServiceClient(
     "http://localhost:8080",
@@ -62,7 +61,7 @@ function App() {
   };
 
   const handleRotate = (value) => {
-    console.log(value);
+    // console.log(value);
     if(value===90){
       setRight(right+1);
     }else{
@@ -116,11 +115,11 @@ function App() {
   const generateResult = async () => {
     var final_rotate = rotate;
     if(rotateDegree!=0 && rotateDegree!=''){
-      console.log(rotateDegree);
+      // console.log(rotateDegree);
       final_rotate.push(rotateDegree);
     }
-    for(var i=0; i<final_rotate.length; i++)
-      console.log(final_rotate[i]+" ");
+    // for(var i=0; i<final_rotate.length; i++)
+    //   console.log(final_rotate[i]+" ");
 
     if(imgBuffer==null){
       setImageErrorMsg("Invalid Image Data");
@@ -172,8 +171,8 @@ function App() {
   const resetState = () =>{
     // setImgSrc(null);
     // setImgBuffer(null);
-    setFlipHorizontal(null);
-    setFlipVertical(null);
+    setFlipHorizontal(false);
+    setFlipVertical(false);
     setThumbnail(false);
     setGrayscale(false);
     setWidth(null);
@@ -218,7 +217,7 @@ function App() {
               <input
                 onChange={() => handleFlip("horizontal")}
                 type="checkbox"
-                value=""
+                checked={flipHorizontal}
                 className="sr-only peer"
               />
               <div className="relative w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
@@ -230,7 +229,7 @@ function App() {
               <input
                 onChange={() => handleFlip("vertical")}
                 type="checkbox"
-                value=""
+                checked={flipVertical}
                 className="sr-only peer"
               />
               <div className="relative w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
@@ -287,7 +286,7 @@ function App() {
               <input
                 onChange={handleGrayScaleChange}
                 type="checkbox"
-                value=""
+                checked={grayscale}
                 className="sr-only peer"
               />
               <div className="relative w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
@@ -299,7 +298,7 @@ function App() {
               <input
                 onChange={handleThumbnailChange}
                 type="checkbox"
-                value=""
+                checked={thumbnail}
                 className="sr-only peer"
               />
               <div className="relative w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
