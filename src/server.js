@@ -138,7 +138,7 @@ const getImageOperation = async (call, callback) => {
         // If there's an error during processing, construct a failure response
         callback(null, {
             fail: {
-                code: error.code || 500, // Internal Server Error or a specific error code
+                code: error.code || 422, // Internal Server Error or a specific error code
                 message: error.message || "Failed to process the image."
             }
         });
