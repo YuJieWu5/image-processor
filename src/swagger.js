@@ -61,7 +61,10 @@ const swaggerDefinition = {
               "type": "number"
             },
             "rotate": {
-              "type": "integer"
+              "type": "array",
+              "items":{
+                "type": "integer"
+              }
             },
             "resize": {
               "type": "array",
