@@ -5,6 +5,24 @@ const sharp = require('sharp');
 // Define the path to your .proto file
 const PROTO_PATH = path.join(__dirname, 'image_operation.proto');
 
+// init express for swagger api
+const express = require('express');
+const swaggerUI = require('swagger-ui-express');
+const swaggerSpec = require('./swagger');
+
+const app = express();
+
+// Serve Swagger documentation
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerSpec));
+
+// Your API routes go here
+
+app.listen(8081, () => {
+console.log('Server is running on port 8081');
+});
+
+// api definition
+
 // Load the protobuf definitions
 const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
     keepCase: true,
