@@ -5,7 +5,7 @@ const swaggerDefinition = {
     "info": {
       "title": "Image Processor",
       "version": "1.0.0",
-      "description": "The ImageOperation documentation includes the request/response body that clients will use, and implements gRPC API design. I use JSON-RPC to simulate the protocol message buffer in the document."
+      "description": "The ImageOperation documentation includes the request/response body that clients will use, and implements gRPC API design. I use JSON format to simulate the protocol message buffer in the document."
     },
     "servers": [
       {
@@ -33,7 +33,7 @@ const swaggerDefinition = {
               "content": {
                 "application/json": {
                   "schema": {
-                    "$ref": '#/components/schemas/RequestSuccessWithThumbnail'
+                    "$ref": "#/components/schemas/RequestSuccessWithThumbnail"
                   }
                 }
               }
