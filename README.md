@@ -11,7 +11,7 @@
 </div>
 
 <!-- TABLE OF CONTENTS -->
-<details>
+<!-- <details>
   <summary>Table of Contents</summary>
   <ol>
     <li>
@@ -28,7 +28,7 @@
       </ul>
     </li>
   </ol>
-</details>
+</details> -->
 
 <!-- ABOUT THE PROJECT -->
 
@@ -53,18 +53,15 @@ This project aims to address the image processing problem, using gRPC API design
 
 To get a local copy up and running follow these simple example steps.
 
-### Prerequisites
 
-This is an example of how to list things you need to use the software and how to install them.
-
-#### Project Setup
+### Project Setup
 
 - Run
     ```sh
         npm install
     ```
 
-#### Envoy
+### Envoy
 
 - Run
 
@@ -72,7 +69,7 @@ This is an example of how to list things you need to use the software and how to
         docker-compose up -d
     ```
 
-#### Server
+### Server
 
 - Run
 
@@ -81,7 +78,7 @@ This is an example of how to list things you need to use the software and how to
         node server.js
     ```
 
-#### Client
+### Client
 
 - To run the app
 
@@ -89,7 +86,7 @@ This is an example of how to list things you need to use the software and how to
     npm start
   ```
 
-#### API Documentation
+### API Documentation
 
 - The live API documentation is host on http://localhost:8081/api-docs/
 
