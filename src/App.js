@@ -138,6 +138,10 @@ function App() {
       client.getImageOperation(request, {}, function (err, response) {
         if (err) {
           console.error("Error:", err);
+          let text = document.createElement("h3");
+          text.className = "error-txt"
+          text.textContent = err.message;
+          document.getElementById("result").appendChild(text);
         } else {
           let content;
           let img;
@@ -179,6 +183,10 @@ function App() {
       });
     } catch (error) {
       console.error("Error:", error);
+      let text = document.createElement("h3");
+      text.className = "error-txt"
+      text.textContent = error.message;
+      document.getElementById("result").appendChild(text);
     }
   };
 
