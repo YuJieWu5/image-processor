@@ -165,7 +165,10 @@ const getImageOperation = async (call, callback) => {
 
 
 const main = () => {
-    const server = new grpc.Server();
+    const server = new grpc.Server({
+        'grpc.max_receive_message_length': 10 * 1024 * 1024, // 10 MB
+        'grpc.max_send_message_length': 10 * 1024 * 1024, // 10 MB
+    });
 
     // Add the ImageOperationService to the server
     server.addService(imageProto.ImageOperationService.service, {
