@@ -23,7 +23,8 @@ function App() {
   const [heightErrorMsg, setHeightErrorMsg] = useState(null);
   const [rotateErrorMsg, setRotateErrorMsg] = useState(null);
   const [rotate, setRotate] = useState([]);
-  var rotateDegree = 0;
+  const [rotateDegree, setRotateDegree] = useState(0);
+  
   const client = new ImageOperationServiceClient(
     "http://localhost:8080",
     null,
@@ -32,6 +33,7 @@ function App() {
 
   const handleImage = (event) => {
     const file = event.target.files[0];
+
     if (!file) {
       setImageErrorMsg("Invalid Image Data");
       return;
@@ -49,6 +51,7 @@ function App() {
       setImgSrc(e.target.result);
     };
     readerDataUrl.readAsDataURL(file);
+    resetResult();
     setImageErrorMsg(null);
   };
 
@@ -61,20 +64,18 @@ function App() {
   };
 
   const handleRotate = (value) => {
-    // console.log(value);
     if(value===90){
       setRight(right+1);
     }else{
       setLeft(left+1);
     }
-    // rotate.push(value);
     setRotate([...rotate, value]);
   };
 
   const handleRotateDegree = (e) =>{
     const reg = /^[-0-9\b]+$/;
     if(reg.test(e.target.value)){
-      rotateDegree = e.target.value;
+      setRotateDegree(e.target.value);
       setRotateErrorMsg(null);
     }else if(e.target.value==="")
       setRotateErrorMsg(null);
@@ -115,11 +116,9 @@ function App() {
   const generateResult = async () => {
     var final_rotate = rotate;
     if(rotateDegree!=0 && rotateDegree!=''){
-      // console.log(rotateDegree);
+      console.log(rotateDegree);
       final_rotate.push(rotateDegree);
     }
-    // for(var i=0; i<final_rotate.length; i++)
-    //   console.log(final_rotate[i]+" ");
 
     if(imgBuffer==null){
       setImageErrorMsg("Invalid Image Data");
@@ -140,19 +139,34 @@ function App() {
         if (err) {
           console.error("Error:", err);
         } else {
-          // if there is thumbnail in request, content is response.array[0]
           let content;
           let img;
+          let img_thumbnail;
           let blob;
           let url;
+          
+          //Generate Result image section title
+          content = response.array[1];
+          let text = document.createElement("h3");
+          text.textContent = "Result Image"
+          document.getElementById("result").appendChild(text);
+
+          //request.array[5] refers to thumbnail
           if (request.array[5] === true) {
-            content = response.array[1];
-            blob = new Blob([content[3]], { type: "image/png" });
+            //load general size
+            blob = new Blob([content[2]], { type: "image/png" });
             url = URL.createObjectURL(blob);
             img = document.createElement("img");
             img.src = url;
             document.getElementById("result").appendChild(img);
+            //load thumbnail image
+            blob = new Blob([content[3]], { type: "image/png" });
+            url = URL.createObjectURL(blob);
+            img_thumbnail = document.createElement("img");
+            img_thumbnail.src = url;
+            document.getElementById("result").appendChild(img_thumbnail);
           } else {
+            // if there is no thumbnail in request, content is response.array[0]
             content = response.array[0][2];
             blob = new Blob([content], { type: "image/png" });
             url = URL.createObjectURL(blob);
@@ -169,8 +183,6 @@ function App() {
   };
 
   const resetState = () =>{
-    // setImgSrc(null);
-    // setImgBuffer(null);
     setFlipHorizontal(false);
     setFlipVertical(false);
     setThumbnail(false);
@@ -184,33 +196,45 @@ function App() {
     setRight(0);
     setLeft(0);
     setRotate([]);
+    document.getElementById('rotateDegree').value = "";
+    document.getElementById('width').value = "";
+    document.getElementById('height').value = "";
+  }
+
+  const resetResult = () =>{
+    const resultElement = document.getElementById("result");
+    while (resultElement.firstChild) {
+      resultElement.removeChild(resultElement.firstChild);
+    }
   }
 
   return (
     <>
       <label className="w-500 flex">
         <input
-          className=" hidden"
+          className="hidden"
           type="file"
           accept="image/*"
           onChange={handleImage}
         />
-        <div className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">
+        <div className=" ml-5 mt-3 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">
           Select Image
         </div>
       </label>
       {imageErrorMsg!=null &&<label className="error-txt">{imageErrorMsg}</label>}
-      <div className="grid grid-cols-2 gap-2">
-        <div>
-          <h1>Original Image</h1>
+      <div className="row ml-5">
+        <div className="col-md-7">
           {imgSrc != null && (
-            <img src={imgSrc} alt="Uploaded" style={{ maxWidth: "500px" }} />
+            <>
+              <h3>Original Image</h3>
+              <img src={imgSrc} alt="Uploaded" style={{ maxWidth: "500px" }} />
+            </>
           )}
           <div id="result" className="overflow-y" style={{ maxWidth: "500px" }}>
-            <h1>Processed Images</h1>
+            {/* <h1>Processed Images</h1> */}
           </div>
         </div>
-        <div className="grid-flow-col auto-cols-max">
+        <div className="col-md-5">
           <div>
             <label className="font-bold">Flip Horizontal:</label>
             <label className="inline-flex items-center cursor-pointer ml-4">
@@ -254,6 +278,7 @@ function App() {
             <div className="grid grid-flow-row auto-rows-max">
               <label className="font-bold">Rotate with degree:</label>
               <input
+                id="rotateDegree"
                 type="text"
                 onChange={handleRotateDegree}
                 className="block w-20 p-3 ps-5 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
@@ -263,21 +288,27 @@ function App() {
           </div>
           <div className="mt-5">
             <label className="font-bold">Resize:</label>
-            <div className="grid grid-flow-row auto-rows-max">
-              <label>Width:</label>
-              <input
-                onChange={handleWidthChange}
-                type="text"
-                className="block w-20 p-3 ps-5 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              />
-              {widthErrorMsg!=null &&<label className="error-txt">{widthErrorMsg}</label>}
-              <label>Height:</label>
-              <input
-                onChange={handleHeightChange}
-                type="text"
-                className="block w-20 p-3 ps-5 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              />
-              {heightErrorMsg!=null &&<label className="error-txt">{heightErrorMsg}</label>}
+            <div className="row">
+              <div className="col-md-6">
+                  <label>Width:</label>
+                  <input
+                    id="width"
+                    onChange={handleWidthChange}
+                    type="text"
+                    className="block w-30 p-3 ps-5 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  />
+                  {widthErrorMsg!=null &&<label className="error-txt">{widthErrorMsg}</label>}
+              </div>
+              <div className="col-md-6">
+                <label>Height:</label>
+                <input
+                  id="height"
+                  onChange={handleHeightChange}
+                  type="text"
+                  className="block w-30 p-3 ps-5 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                />
+                {heightErrorMsg!=null &&<label className="error-txt">{heightErrorMsg}</label>}
+              </div>
             </div>
           </div>
           <div className="mt-5">
