@@ -49,6 +49,11 @@ This project aims to address the image processing problem, using gRPC API design
 
 <!-- GETTING STARTED -->
 
+### Interface
+<div style="display: flex; justify-content: center;">
+    <img src="public/interface.png" alt="screenshot1" width="600" height="450" />
+</div>
+
 ## Getting Started
 
 To get a local copy up and running follow these simple example steps.
