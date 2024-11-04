@@ -52,17 +52,46 @@ This project aims to address the image processing problem, using gRPC API design
 This project aims to address the image processing problem, using gRPC API design to achieve fast response time. The system provides several operations like resize, rotate, flip, grayscale, and generate thumbnail version.  
 </p>
 <div style="display: flex; justify-content: center;">
-    <img src="public/contextdiagram.jpeg" alt="contextdiagram" width="600" height="450" />
+    <img src="public/contextdiagram.jpeg" alt="contextdiagram" width="600" />
 </div>
 
 ### Composition 
 <div style="display: flex; justify-content: center;">
-    <img src="public/composition.jpeg" alt="contextdiagram" width="600" height="450" />
+    <img src="public/composition.jpeg" alt="contextdiagram" width="600" />
 </div>
+
+### Connector
+<ul>
+  <li><strong>Envoy Proxy:</strong>
+    <ul>
+      <li>Using a docker container to host envoy proxy on port 8080 which is used to bridge the communication gap between HTTP/1.1(which client use) and HTTP/2(which server use), enabling the use of gRPC with the client side that does not support HTTP/2. </li>
+    </ul>
+  </li>
+  <li><strong>Frontend-Envoy proxy:</strong>
+    <ul>
+      <li>Due to the frontend using HTTP/1.1, which lacks support for the features required by gRPC servers operating over HTTP/2, I utilize an Envoy proxy to facilitate communication between these components. Envoy acts as an intermediary, converting HTTP/1.1 requests into HTTP/2, thus ensuring compatibility with the gRPC backend. </li>
+    </ul>
+  </li>
+  <li><strong>Backend-Envoy proxy:</strong>
+    <ul>
+      <li>Just as Envoy Proxy can convert HTTP/1.1 requests from the client to HTTP/2 for compatibility with a gRPC server, it can also perform the reverse operation: converting HTTP/2 responses from the gRPC server back to HTTP/1.1 for clients that do not support HTTP/2. This ensures seamless communication between modern gRPC servers and legacy clients or systems that are limited to HTTP/1.1.  </li>
+    </ul>
+  </li>
+  <li><strong>API Documentation:</strong>
+    <ul>
+      <li>Using swagger with JSON-RPC to provide live documentation of API document.</li>
+    </ul>
+  </li>
+</ul>
+
+### Pattern
+<p>The system utilizes the pipe-filter architecture for separating user interface and backend logic.</p>
+<p>This architecture emphasizes that the backend conducts the operation in certain sequences.​</p>
+
 
 ### Logical
 <div style="display: flex; justify-content: center;">
-    <img src="public/logical.jpeg" alt="contextdiagram" width="600" height="450" />
+    <img src="public/logical.jpeg" alt="contextdiagram" width="600"  />
 </div>
 <ul>
   <li><strong>Image load into request body:</strong>
