@@ -47,6 +47,39 @@ This project aims to address the image processing problem, using gRPC API design
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
+### Context 
+<p>
+This project aims to address the image processing problem, using gRPC API design to achieve fast response time. The system provides several operations like resize, rotate, flip, grayscale, and generate thumbnail version.  
+</p>
+<div style="display: flex; justify-content: center;">
+    <img src="public/contextdiagram.jpeg" alt="contextdiagram" width="600" height="450" />
+</div>
+
+### Composition 
+<div style="display: flex; justify-content: center;">
+    <img src="public/composition.jpeg" alt="contextdiagram" width="600" height="450" />
+</div>
+
+### Logical
+<div style="display: flex; justify-content: center;">
+    <img src="public/logical.jpeg" alt="contextdiagram" width="600" height="450" />
+</div>
+<ul>
+  <li><strong>Image load into request body:</strong>
+    <ul>
+      <li>This step does not include any API call; it describes the user selecting an image for the web UI. When the front end captures an image file, it adds the image data to the protocol buffer message body.</li>
+    </ul>
+  </li>
+  <li><strong>Image Operation Request:</strong>
+    <ul>
+      <li>Users select operations (e.g., flipping, rotating, resizing, creating thumbnails, and applying grayscale filter) through the interface, and the client side stores these operations in the protocol buffer message body. The limitation here is that the current system design did not support edit operations list functionality.</li>
+      <li>When the user clicks the “Generate” button on the frontend interface, if there is image data then the client calls the imageOperation API request to the backend, else if there is no image data, the error text will display.</li>
+      <li>The backend decodes the image data in the protocol buffer, then performs the requested operations, and returns the result to the client.</li>
+    </ul>
+  </li>
+</ul>
+
+
 <!-- GETTING STARTED -->
 
 ### Interface
