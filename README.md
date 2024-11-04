@@ -91,7 +91,7 @@ This project aims to address the image processing problem, using gRPC API design
 
 ### Logical
 <div style="display: flex; justify-content: center;">
-    <img src="public/logical.jpeg" alt="contextdiagram" width="600"  />
+    <img src="public/logical.jpeg" alt="contextdiagram" height="700"  />
 </div>
 <ul>
   <li><strong>Image load into request body:</strong>
