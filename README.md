@@ -57,7 +57,7 @@ This project aims to address the image processing problem, using gRPC API design
 
 ### Composition 
 <div style="display: flex; justify-content: center;">
-    <img src="public/composition.jpeg" alt="contextdiagram" width="600" />
+    <img src="public/composition.jpeg" alt="contextdiagram" height="700" />
 </div>
 
 ### Connector
